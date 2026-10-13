@@ -8,103 +8,158 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes slotSpin {
-            0% { transform: translateY(-100%); opacity: 0; }
-            50% { transform: translateY(10%); opacity: 0.8; }
-            100% { transform: translateY(0); opacity: 1; }
+            0% { transform: translateY(-30px); opacity: 0; scale: 0.95; }
+            50% { transform: translateY(5px); opacity: 0.8; scale: 1.02; }
+            100% { transform: translateY(0); opacity: 1; scale: 1; }
         }
         .spin-anim {
-            animation: slotSpin 0.4s ease-out;
+            animation: slotSpin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        /* 自訂拉桿樣式 */
+        input[type=range]::-webkit-slider-thumb {
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4);
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-amber-100 via-orange-100 to-rose-200 min-h-screen flex items-center justify-center p-4">
+<body class="relative min-h-screen flex items-center justify-center p-4 bg-slate-900 overflow-x-hidden font-sans">
 
-    <div class="bg-white/80 backdrop-blur-md shadow-2xl rounded-3xl p-6 md:p-8 max-w-md w-full border border-white/50">
+    <!-- 背景動態氣氛燈光 (Ambient Lighting Blobs) -->
+    <div class="fixed -top-20 -left-20 w-96 h-96 bg-orange-500/30 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed top-1/3 -right-20 w-96 h-96 bg-rose-500/25 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed -bottom-20 left-1/3 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- 主要主體卡片 (Glassmorphism) -->
+    <div class="relative z-10 bg-white/90 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] rounded-3xl p-6 md:p-8 max-w-md w-full border border-white/60">
+        
         <!-- 標題區 -->
         <div class="text-center mb-6">
-            <h1 class="text-2xl md:text-3xl font-extrabold text-orange-600 tracking-wide">🍱 晚餐決定器</h1>
-            <p class="text-xs md:text-sm text-gray-500 mt-1">擺脫選擇困難症，讓 AI 幫你秒選晚餐！</p>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-orange-100/80 text-orange-600 rounded-full text-xs font-extrabold tracking-wider mb-2">
+                ✨ 今晚吃什麼？ AI 幫你算
+            </div>
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight bg-gradient-to-r from-orange-600 via-amber-600 to-rose-600 bg-clip-text text-transparent">
+                🍱 晚餐決定器
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">結合心情、預算與交通方式的智能決策小幫手</p>
         </div>
 
         <!-- 輸入表單區 -->
         <div class="space-y-5">
             <!-- 1. 心情指數 -->
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="text-sm font-bold text-gray-700">今日心情指數</label>
-                    <span id="moodEmoji" class="text-2xl">😭</span>
+            <div class="bg-gray-50/80 p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">1. 今日心情狀態</label>
+                    <span id="moodEmoji" class="text-2xl transition-transform duration-200">😭</span>
                 </div>
                 <input type="range" id="moodInput" min="1" max="10" value="3" 
-                       class="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
                        oninput="updateMoodUI()">
-                <div class="flex justify-between text-xs text-gray-400 mt-1">
-                    <span>1 (極度心累)</span>
+                <div class="flex justify-between text-[11px] font-medium text-gray-400 mt-1.5">
+                    <span>1 (心累想哭)</span>
                     <span>5 (平淡如水)</span>
                     <span>10 (爽翻天)</span>
                 </div>
             </div>
 
             <!-- 2. 晚餐預算 -->
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">晚餐預算 (NTD)</label>
+            <div class="bg-gray-50/80 p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">2. 晚餐預算上限 (NTD)</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 font-bold">$</span>
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-orange-500 font-black text-base">$</span>
                     <input type="number" id="budgetInput" value="150" min="30" max="1000"
-                           class="w-full pl-8 pr-4 py-2 bg-orange-50/50 border border-orange-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 font-semibold">
+                           class="w-full pl-8 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 font-bold text-base shadow-inner">
                 </div>
             </div>
 
-            <!-- 3. 步行時間 -->
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="text-sm font-bold text-gray-700">願意走路時間</label>
-                    <span id="walkVal" class="text-sm font-bold text-orange-600">5 分鐘</span>
+            <!-- 3. 交通工具選擇 -->
+            <div class="bg-gray-50/80 p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">3. 出門交通工具</label>
+                <div class="grid grid-cols-4 gap-2" id="transportGroup">
+                    <button type="button" onclick="selectTransport('walk')" id="btn-walk"
+                            class="transport-btn active py-2 rounded-xl border border-orange-500 bg-orange-500 text-white flex flex-col items-center justify-center font-bold text-xs transition-all shadow-sm">
+                        <span class="text-base mb-0.5">🚶</span>走路
+                    </button>
+                    <button type="button" onclick="selectTransport('bike')" id="btn-bike"
+                            class="transport-btn py-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 flex flex-col items-center justify-center font-bold text-xs transition-all shadow-sm">
+                        <span class="text-base mb-0.5">🚲</span>腳踏車
+                    </button>
+                    <button type="button" onclick="selectTransport('scooter')" id="btn-scooter"
+                            class="transport-btn py-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 flex flex-col items-center justify-center font-bold text-xs transition-all shadow-sm">
+                        <span class="text-base mb-0.5">🛵</span>機車
+                    </button>
+                    <button type="button" onclick="selectTransport('car')" id="btn-car"
+                            class="transport-btn py-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 flex flex-col items-center justify-center font-bold text-xs transition-all shadow-sm">
+                        <span class="text-base mb-0.5">🚗</span>開車
+                    </button>
                 </div>
-                <input type="range" id="walkInput" min="1" max="30" value="5" 
-                       class="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                       oninput="document.getElementById('walkVal').innerText = this.value + ' 分鐘'">
-                <p class="text-[10px] text-gray-400 mt-1">* 距離推算依據成人平均步速 (約 4.8 km/h) 計算</p>
+            </div>
+
+            <!-- 4. 移動時間上限 -->
+            <div class="bg-gray-50/80 p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">4. 願意花費車程/時間</label>
+                    <span id="timeVal" class="text-xs font-black text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">5 分鐘</span>
+                </div>
+                <input type="range" id="timeInput" min="1" max="30" value="5" 
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                       oninput="document.getElementById('timeVal').innerText = this.value + ' 分鐘'">
+                <p id="speedNote" class="text-[10px] text-gray-400 mt-2 italic">* 距離推算依據成人平均步速 (約 4.8 km/h) 計算</p>
             </div>
 
             <!-- 決策按鈕 -->
             <button onclick="decideDinner()" id="decideBtn"
-                    class="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-orange-300 transition-all duration-200 active:scale-95">
+                    class="w-full py-4 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-black text-base rounded-2xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all duration-200 active:scale-95 tracking-wider">
                 🎰 幫我決定晚餐！
             </button>
         </div>
 
-        <!-- 結果展示卡片 -->
-        <div id="resultCard" class="hidden mt-6 p-5 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl text-center space-y-3 relative overflow-hidden">
-            <span class="text-xs font-semibold uppercase tracking-wider text-orange-500 bg-orange-100 px-3 py-1 rounded-full">AI 決定結果</span>
+        <!-- 結果展示卡片 (預設隱藏) -->
+        <div id="resultCard" class="hidden mt-6 p-5 bg-gradient-to-b from-orange-50/90 to-amber-50/90 border border-orange-200/80 rounded-2xl text-center space-y-3 relative overflow-hidden shadow-inner">
+            <div class="inline-block px-3 py-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-black rounded-full shadow-sm uppercase tracking-wider">
+                🎉 AI 決策結果
+            </div>
             
-            <div id="foodResult" class="text-2xl font-black text-gray-800 tracking-wide mt-2">
+            <div id="foodResult" class="text-2xl font-black text-gray-800 tracking-tight mt-1">
                 【麻辣鴨血】
             </div>
 
-            <div class="flex justify-center items-center gap-4 text-sm font-medium text-gray-600 mt-2">
-                <div>情緒療癒：<span id="healVal" class="font-bold text-rose-500">80%</span></div>
-                <div>合理距離：<span id="distVal" class="font-bold text-amber-600">約 400 公尺內</span></div>
+            <div class="grid grid-cols-2 gap-2 text-xs font-bold text-gray-600 bg-white/70 p-2.5 rounded-xl border border-orange-100">
+                <div class="flex items-center justify-center gap-1">
+                    <span>情緒療癒度：</span>
+                    <span id="healVal" class="text-rose-500 font-black">80%</span>
+                </div>
+                <div class="flex items-center justify-center gap-1">
+                    <span>估算極限距離：</span>
+                    <span id="distVal" class="text-amber-600 font-black">約 400 公尺</span>
+                </div>
             </div>
 
-            <div id="aiQuote" class="text-sm text-gray-600 bg-white/60 p-3 rounded-xl border border-orange-100 mt-2">
+            <div id="aiQuote" class="text-xs text-gray-600 bg-white/80 p-3 rounded-xl border border-orange-100">
                 預估花費：$150 <br>
-                <span class="text-xs italic text-gray-500 mt-1 block">「吃飽飽才有力氣繼續努力喔！」</span>
+                <span class="text-[11px] italic text-gray-500 mt-1 block">「吃飽飽才有力氣繼續努力喔！」</span>
             </div>
             
             <!-- 動態 Google Maps 連結按鈕 -->
             <a id="mapsLink" href="#" target="_blank" 
-               class="mt-3 block w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded-xl shadow-md transition-all">
-                📍 在 Google 地圖尋找附近店家
+               class="mt-2 flex items-center justify-center gap-1.5 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl shadow-md shadow-blue-500/20 transition-all">
+                <span>📍 在 Google 地圖尋找附近店家</span>
             </a>
 
-            <button onclick="decideDinner()" class="text-xs font-bold text-orange-600 hover:underline mt-3">
+            <button onclick="decideDinner()" class="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline mt-2 inline-block">
                 🔄 不滿意？再抽一次
             </button>
         </div>
     </div>
 
     <script>
-        const WALKING_SPEED_M_PER_MIN = 80;
+        // 交通工具速率設定 (單位：公尺/分鐘)
+        const transportConfig = {
+            walk: { name: '走路', speed: 80, note: '* 距離推算依據成人平均步速 (約 4.8 km/h) 計算' },
+            bike: { name: '腳踏車', speed: 250, note: '* 距離推算依據腳踏車平均時速 (約 15 km/h) 計算' },
+            scooter: { name: '機車', speed: 500, note: '* 距離推算依據機車市區時速 (約 30 km/h) 計算' },
+            car: { name: '開車', speed: 667, note: '* 距離推算依據汽車市區時速 (約 40 km/h) 計算' }
+        };
+
+        let selectedTransport = 'walk';
 
         const foods = {
             lowMood: [
@@ -122,7 +177,7 @@
             highMood: [
                 { name: "炙燒牛排套餐", keyword: "牛排", price: 350, quote: "心情這麼好，當然要吃塊大牛排慶祝一下！" },
                 { name: "日式生魚片丼飯", keyword: "生魚片丼飯", price: 280, quote: "享受精緻美味，犒賞今天超棒的自己！" },
-                { name: "韓式燒肉", keyword: "韓式燒肉", price: 599, quote: "叫上好朋友，今晚開心地大口吃肉吧！" },
+                { name: "韓式燒肉吃到飽", keyword: "韓式燒肉", price: 599, quote: "叫上好朋友，今晚開心地大口吃肉吧！" },
                 { name: "精緻義大利麵", keyword: "義大利麵", price: 250, quote: "燈光美氣氛佳，享受高品質的美味晚餐！" }
             ]
         };
@@ -134,15 +189,28 @@
             document.getElementById('moodEmoji').innerText = emojis[val - 1];
         }
 
+        function selectTransport(type) {
+            selectedTransport = type;
+            const buttons = document.querySelectorAll('.transport-btn');
+            buttons.forEach(btn => {
+                btn.className = "transport-btn py-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 flex flex-col items-center justify-center font-bold text-xs transition-all shadow-sm";
+            });
+
+            const activeBtn = document.getElementById(`btn-${type}`);
+            activeBtn.className = "transport-btn active py-2 rounded-xl border border-orange-500 bg-orange-500 text-white flex flex-col items-center justify-center font-bold text-xs transition-all shadow-md shadow-orange-500/20";
+
+            document.getElementById('speedNote').innerText = transportConfig[type].note;
+        }
+
         function decideDinner() {
             const mood = parseInt(document.getElementById('moodInput').value);
             const budget = parseInt(document.getElementById('budgetInput').value);
-            const walkMin = parseInt(document.getElementById('walkInput').value);
+            const travelTime = parseInt(document.getElementById('timeInput').value);
             const btn = document.getElementById('decideBtn');
             const resultCard = document.getElementById('resultCard');
 
             if (isNaN(budget) || budget <= 0) {
-                alert("溫馨提醒：請輸入正確的預算喔！");
+                alert("溫馨提醒：請輸入正確的預算金額喔！");
                 return;
             }
 
@@ -163,17 +231,28 @@
                     picked = availableFoods[Math.floor(Math.random() * availableFoods.length)];
                 }
 
-                const maxDistanceMeters = walkMin * WALKING_SPEED_M_PER_MIN;
+                // 計算最大到達距離 (公尺)
+                const speedMetersPerMin = transportConfig[selectedTransport].speed;
+                const maxDistanceMeters = travelTime * speedMetersPerMin;
                 
+                // 動態切換公尺 / 公里顯示
+                let distText = "";
+                if (maxDistanceMeters >= 1000) {
+                    distText = `約 ${(maxDistanceMeters / 1000).toFixed(1)} 公里`;
+                } else {
+                    distText = `約 ${maxDistanceMeters} 公尺`;
+                }
+
+                // 前綴地名描述
                 let locationPrefix = "";
-                if (maxDistanceMeters <= 400) {
-                    const close = ["巷口的", "樓下的", "學餐的", "轉角的"];
+                if (maxDistanceMeters <= 500) {
+                    const close = ["巷口的", "樓下的", "轉角的", "近距離的"];
                     locationPrefix = close[Math.floor(Math.random() * close.length)];
-                } else if (maxDistanceMeters <= 1200) {
-                    const mid = ["附近商圈的", "學區周邊的", "過馬路那間"];
+                } else if (maxDistanceMeters <= 3000) {
+                    const mid = ["附近商圈的", "熱門學區的", "熱鬧街區的"];
                     locationPrefix = mid[Math.floor(Math.random() * mid.length)];
                 } else {
-                    const far = ["隔壁夜市的", "市區排隊名店", "騎車去吃的"];
+                    const far = ["市區排隊名店", "跨區精選的", "兜風探店首選"];
                     locationPrefix = far[Math.floor(Math.random() * far.length)];
                 }
 
@@ -182,10 +261,10 @@
                 // 填入結果
                 document.getElementById('foodResult').innerText = `【${locationPrefix}${picked.name}】`;
                 document.getElementById('healVal').innerText = healPercent + "%";
-                document.getElementById('distVal').innerText = `約 ${maxDistanceMeters} 公尺內`;
-                document.getElementById('aiQuote').innerHTML = `預估花費：$${picked.price} <br> <span class="text-xs italic text-gray-500 mt-1 block">「${picked.quote}」</span>`;
+                document.getElementById('distVal').innerText = distText;
+                document.getElementById('aiQuote').innerHTML = `預估花費：$${picked.price} <br> <span class="text-[11px] italic text-gray-500 mt-1 block">「${picked.quote}」</span>`;
 
-                // 動態產生 Google 地圖搜尋連結
+                // Google Maps 動態搜尋網址
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(picked.keyword)}`;
                 document.getElementById('mapsLink').href = mapsUrl;
 
