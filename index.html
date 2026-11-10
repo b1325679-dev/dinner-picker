@@ -9,93 +9,99 @@
 <body>
     <div class="container">
         <header>
-            <h1>✨ 租屋防雷知識庫</h1>
-            <p>專為大學生設計，用最白話的方式看懂你的權利。</p>
+            <h1>租屋法律支援網</h1>
+            <p>Glassmorphism 現代 UI × 內建 Gemini AI 真實法律顧問</p>
         </header>
 
         <main class="grid-layout">
-            <!-- 卡片 1 -->
-            <div class="card">
-                <h2>💰 押金規則與退還</h2>
-                <p>房東說要收三個月押金可以嗎？牆壁變黃可以扣我押金嗎？教你如何自保，順利拿回辛苦錢。</p>
-                <a href="pages/deposit-rules.html" class="btn-primary">閱讀指南 →</a>
+            <div class="glass-card">
+                <h2>💸 押金到底怎麼扣？</h2>
+                <p>房東要求三個月押金？牆壁變黃要扣錢？了解最新法規，教你如何安全拿回所有的押金。</p>
+                <a href="pages/deposit-rules.html" class="btn-glass">閱讀法規</a>
             </div>
 
-            <!-- 卡片 2 -->
-            <div class="card blue-tape">
-                <h2>🔧 修繕責任歸屬</h2>
-                <p>冷氣不冷、燈泡不亮、馬桶不通，到底該誰出錢修？搞懂民法規定，別再當冤大頭。</p>
-                <a href="pages/repair-rules.html" class="btn-primary">閱讀指南 →</a>
-            </div>
-            
-            <!-- 卡片 3 (示範擴充性) -->
-            <div class="card">
-                <h2>📝 提前解約怎麼辦？</h2>
-                <p>住得不習慣想搬走，違約金最高只能扣多少？教你查看合約上的「任意終止租約」條款。</p>
-                <a href="#" class="btn-primary" onclick="alert('你已經學會建立新頁面了！可以自己試著把這頁生出來喔！')">自己動手做做看</a>
+            <div class="glass-card">
+                <h2>🛠️ 修繕責任歸誰？</h2>
+                <p>冷氣壞掉房東裝死不修？根據民法，只要是自然損耗，通通都是房東要買單！教你如何合法自保。</p>
+                <a href="pages/repair-rules.html" class="btn-glass">閱讀法規</a>
             </div>
         </main>
     </div>
 
-    <!-- AI 右下角聊天室 -->
+    <!-- AI 聊天室 -->
     <div id="chat-widget">
-        <button id="chat-btn" onclick="toggleChat()">💬 租屋小助手</button>
+        <button id="chat-btn" onclick="toggleChat()">✨ 喚醒 AI 顧問</button>
         <div id="chat-box">
-            <div id="chat-header">🤖 法律問答 AI</div>
+            <div id="chat-header">Gemini 法律顧問</div>
             <div id="chat-content">
-                <div class="msg bot-msg">同學你好！遇到租屋糾紛了嗎？你可以問我關於「押金」、「修繕」或「解約」的問題喔！</div>
+                <div class="msg bot-msg">你好！我是基於 Gemini 打造的真實租屋顧問。無論是電費超收、提前解約還是漏水糾紛，請直接問我！</div>
             </div>
             <div id="chat-input-area">
-                <input type="text" id="chat-input" placeholder="輸入你想問的問題..." onkeypress="handleEnter(event)">
-                <button id="send-btn" onclick="sendMessage()">送出</button>
+                <input type="text" id="chat-input" placeholder="例如：房東一度電收7塊合法嗎？" onkeypress="handleEnter(event)">
+                <button id="send-btn" onclick="sendMessage()">發送</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 開關聊天室
+        // 【重要】將你申請的 Gemini API Key 貼在下方單引號內
+        const API_KEY = 'AQ.Ab8RN6Ius1z3xVL59LfbVJNsNVswslJ2w87IMC-H-0Z11Z-ghg'; 
+
         function toggleChat() {
             const box = document.getElementById('chat-box');
             box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        // 監聽 Enter 鍵
         function handleEnter(e) {
             if (e.key === 'Enter') sendMessage();
         }
 
-        // 發送訊息與 AI 關鍵字回應邏輯
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if (!text) return;
             
             const content = document.getElementById('chat-content');
             
-            // 1. 印出使用者的問題
+            // 1. 顯示使用者輸入
             content.innerHTML += `<div class="msg user-msg">${text}</div>`;
             input.value = '';
-            content.scrollTop = content.scrollHeight; // 捲動到最底
             
-            // 2. 假裝思考 0.8 秒後回答
-            setTimeout(() => {
-                let reply = "這個問題比較複雜，建議你可以點擊我們上面的文章閱讀，或是尋求學校教官室協助喔！";
+            // 2. 顯示思考中
+            const loadingId = 'loading-' + Date.now();
+            content.innerHTML += `<div id="${loadingId}" class="loading-msg">Gemini 正在分析法規...</div>`;
+            content.scrollTop = content.scrollHeight;
+            
+            // 3. 呼叫真實的 Gemini API
+            try {
+                // 設定 Prompt：限制他用純文字、白話文回答租屋問題
+                const promptText = `你是一個專業的台灣大學生租屋法律顧問。請用純文字（不要使用 Markdown 星號或粗體）、白話、親切且簡短（100字內）的方式回答以下問題：\n問題：${text}`;
                 
-                // 簡易關鍵字判斷
-                if (text.includes("押金")) {
-                    reply = "依據法規，押金最高只能收「兩個月」！如果你把房間清空並結清水電，房東不能用自然使用痕跡（如牆壁變黃）亂扣你押金喔。";
-                } else if (text.includes("修繕") || text.includes("壞") || text.includes("冷氣")) {
-                    reply = "如果是家電設備「自然老化損壞」，原則上都是房東要負責出錢修繕！記得先拍照傳 LINE 告知房東留存對話紀錄。";
-                } else if (text.includes("解約") || text.includes("退租") || text.includes("搬走")) {
-                    reply = "如果是你單方面想提前搬走，請先看合約有沒有勾選「得任意終止租約」。如果有，提早一個月講，最多只會被扣「一個月」的違約金。";
-                } else if (text.includes("你好") || text.includes("哈囉")) {
-                    reply = "哈囉！有什麼我可以幫忙的嗎？";
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // 移除思考中文字
+                document.getElementById(loadingId).remove();
+                
+                // 4. 顯示 AI 真正生成的回覆
+                if (data.candidates && data.candidates.length > 0) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    content.innerHTML += `<div class="msg bot-msg">${aiReply}</div>`;
+                } else {
+                    content.innerHTML += `<div class="msg bot-msg">抱歉，API連線發生錯誤。</div>`;
                 }
-                
-                // 3. 印出 AI 回答
-                content.innerHTML += `<div class="msg bot-msg">${reply}</div>`;
-                content.scrollTop = content.scrollHeight;
-            }, 800);
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                content.innerHTML += `<div class="msg bot-msg">連線失敗，請檢查 API Key 是否正確填寫。</div>`;
+            }
+            content.scrollTop = content.scrollHeight;
         }
     </script>
 </body>
