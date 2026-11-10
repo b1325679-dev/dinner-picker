@@ -9,73 +9,93 @@
 <body>
     <div class="container">
         <header>
-            <h1>學生租屋權益知識庫</h1>
-            <p>專為大學生設計的暗黑系防雷指南，遇到問題直接問右下角的 AI 助手！</p>
+            <h1>✨ 租屋防雷知識庫</h1>
+            <p>專為大學生設計，用最白話的方式看懂你的權利。</p>
         </header>
 
-        <main>
+        <main class="grid-layout">
+            <!-- 卡片 1 -->
             <div class="card">
-                <h2>📚 常見租屋知識目錄</h2>
-                <ul class="article-list">
-                    <li><a href="pages/deposit-rules.html">押金到底能收多少？退租時怎麼拿回來？</a></li>
-                    <li><a href="#">東西壞了誰負責修？修繕責任歸屬 (敬請期待)</a></li>
-                </ul>
+                <h2>💰 押金規則與退還</h2>
+                <p>房東說要收三個月押金可以嗎？牆壁變黃可以扣我押金嗎？教你如何自保，順利拿回辛苦錢。</p>
+                <a href="pages/deposit-rules.html" class="btn-primary">閱讀指南 →</a>
+            </div>
+
+            <!-- 卡片 2 -->
+            <div class="card blue-tape">
+                <h2>🔧 修繕責任歸屬</h2>
+                <p>冷氣不冷、燈泡不亮、馬桶不通，到底該誰出錢修？搞懂民法規定，別再當冤大頭。</p>
+                <a href="pages/repair-rules.html" class="btn-primary">閱讀指南 →</a>
+            </div>
+            
+            <!-- 卡片 3 (示範擴充性) -->
+            <div class="card">
+                <h2>📝 提前解約怎麼辦？</h2>
+                <p>住得不習慣想搬走，違約金最高只能扣多少？教你查看合約上的「任意終止租約」條款。</p>
+                <a href="#" class="btn-primary" onclick="alert('你已經學會建立新頁面了！可以自己試著把這頁生出來喔！')">自己動手做做看</a>
             </div>
         </main>
     </div>
 
-    <!-- AI 聊天室元件 -->
+    <!-- AI 右下角聊天室 -->
     <div id="chat-widget">
-        <button id="chat-btn" onclick="toggleChat()">💬</button>
+        <button id="chat-btn" onclick="toggleChat()">💬 租屋小助手</button>
         <div id="chat-box">
-            <div id="chat-header">租屋法律小助手 AI</div>
+            <div id="chat-header">🤖 法律問答 AI</div>
             <div id="chat-content">
-                <div class="msg bot-msg">你好！我是租屋小助手，有任何關於「押金」、「修繕」或「解約」的問題都可以問我喔！</div>
+                <div class="msg bot-msg">同學你好！遇到租屋糾紛了嗎？你可以問我關於「押金」、「修繕」或「解約」的問題喔！</div>
             </div>
             <div id="chat-input-area">
-                <input type="text" id="chat-input" placeholder="輸入你的問題..." onkeypress="handleEnter(event)">
-                <button id="send-btn" onclick="sendMessage()">傳送</button>
+                <input type="text" id="chat-input" placeholder="輸入你想問的問題..." onkeypress="handleEnter(event)">
+                <button id="send-btn" onclick="sendMessage()">送出</button>
             </div>
         </div>
     </div>
 
     <script>
+        // 開關聊天室
         function toggleChat() {
             const box = document.getElementById('chat-box');
             box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        // 監聽 Enter 鍵
         function handleEnter(e) {
             if (e.key === 'Enter') sendMessage();
         }
 
+        // 發送訊息與 AI 關鍵字回應邏輯
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if (!text) return;
             
             const content = document.getElementById('chat-content');
-            // 顯示使用者訊息
+            
+            // 1. 印出使用者的問題
             content.innerHTML += `<div class="msg user-msg">${text}</div>`;
             input.value = '';
-            content.scrollTop = content.scrollHeight;
+            content.scrollTop = content.scrollHeight; // 捲動到最底
             
-            // 延遲模擬 AI 思考時間
+            // 2. 假裝思考 0.8 秒後回答
             setTimeout(() => {
-                let reply = "這個問題比較複雜，建議你直接撥打崔媽媽基金會專線尋求專業協助喔！";
+                let reply = "這個問題比較複雜，建議你可以點擊我們上面的文章閱讀，或是尋求學校教官室協助喔！";
                 
-                // 關鍵字判斷邏輯
+                // 簡易關鍵字判斷
                 if (text.includes("押金")) {
-                    reply = "依據法規，押金最高只能收「兩個月」的租金喔！退租時房間清空並結清水電，房東就必須全額退還。";
-                } else if (text.includes("修繕") || text.includes("壞掉") || text.includes("壞了")) {
-                    reply = "如果是自然損壞（例如冷氣突然不冷、熱水器壞掉），原則上都是「房東」要負責出錢修繕喔！記得先拍照存證再通知房東。";
-                } else if (text.includes("解約") || text.includes("退租") || text.includes("違約")) {
-                    reply = "如果合約上有勾選「得任意終止租約」，只要提早一個月通知房東，最多只會被扣「一個月」的違約金。";
+                    reply = "依據法規，押金最高只能收「兩個月」！如果你把房間清空並結清水電，房東不能用自然使用痕跡（如牆壁變黃）亂扣你押金喔。";
+                } else if (text.includes("修繕") || text.includes("壞") || text.includes("冷氣")) {
+                    reply = "如果是家電設備「自然老化損壞」，原則上都是房東要負責出錢修繕！記得先拍照傳 LINE 告知房東留存對話紀錄。";
+                } else if (text.includes("解約") || text.includes("退租") || text.includes("搬走")) {
+                    reply = "如果是你單方面想提前搬走，請先看合約有沒有勾選「得任意終止租約」。如果有，提早一個月講，最多只會被扣「一個月」的違約金。";
+                } else if (text.includes("你好") || text.includes("哈囉")) {
+                    reply = "哈囉！有什麼我可以幫忙的嗎？";
                 }
                 
+                // 3. 印出 AI 回答
                 content.innerHTML += `<div class="msg bot-msg">${reply}</div>`;
                 content.scrollTop = content.scrollHeight;
-            }, 600);
+            }, 800);
         }
     </script>
 </body>
