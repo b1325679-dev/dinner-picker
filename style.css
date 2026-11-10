@@ -1,41 +1,43 @@
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: #f4f7f6;
-    color: #334155;
+    background-color: #121212;
+    color: #e0e0e0;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     line-height: 1.7;
 }
 .container {
     max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
+    margin: 0 auto;
 }
 header {
     text-align: center;
     margin-bottom: 40px;
 }
 header h1 {
-    color: #1e3a8a;
-    font-size: 2.2em;
-    margin-bottom: 10px;
-}
-header p {
-    color: #64748b;
-    font-size: 1.1em;
+    color: #38bdf8;
 }
 .card {
-    background: #ffffff;
+    background: #1e1e1e;
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    border: 1px solid #333;
     margin-bottom: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
 }
 h2 {
-    color: #2563eb;
-    margin-top: 0;
-    border-bottom: 2px solid #eff6ff;
+    color: #38bdf8;
+    border-bottom: 1px solid #333;
     padding-bottom: 10px;
+}
+a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: bold;
+}
+a:hover {
+    text-decoration: underline;
+    color: #7dd3fc;
 }
 ul.article-list {
     list-style: none;
@@ -45,38 +47,108 @@ ul.article-list li {
     margin-bottom: 15px;
 }
 ul.article-list a {
-    text-decoration: none;
-    color: #1e293b;
-    font-weight: 600;
     display: block;
-    padding: 15px 20px;
+    background: #2d2d2d;
+    padding: 15px;
     border-radius: 8px;
-    background: #f8fafc;
-    border-left: 4px solid #3b82f6;
-    transition: all 0.2s ease-in-out;
+    border-left: 4px solid #38bdf8;
+    transition: transform 0.2s;
 }
 ul.article-list a:hover {
-    background: #eff6ff;
     transform: translateX(5px);
+    background: #3a3a3a;
 }
-.back-link {
-    display: inline-block;
-    margin-bottom: 20px;
-    color: #2563eb;
-    text-decoration: none;
-    font-weight: bold;
-    background: #eff6ff;
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: background 0.2s;
+
+/* AI 小助手聊天室 UI */
+#chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
 }
-.back-link:hover {
-    background: #dbeafe;
+#chat-btn {
+    background: #38bdf8;
+    color: #121212;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
 }
-footer {
+#chat-btn:hover {
+    transform: scale(1.1);
+}
+#chat-box {
+    display: none;
+    width: 320px;
+    height: 450px;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    flex-direction: column;
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+    overflow: hidden;
+}
+#chat-header {
+    background: #0f172a;
+    color: #38bdf8;
+    padding: 15px;
     text-align: center;
-    color: #94a3b8;
-    margin-top: 40px;
-    padding-bottom: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+}
+#chat-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.msg {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
     font-size: 0.9em;
+}
+.bot-msg {
+    background: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+.user-msg {
+    background: #0284c7;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+#chat-input-area {
+    display: flex;
+    border-top: 1px solid #333;
+}
+#chat-input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: #121212;
+    color: white;
+    outline: none;
+}
+#send-btn {
+    padding: 0 20px;
+    background: #38bdf8;
+    color: #121212;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+#send-btn:hover {
+    background: #7dd3fc;
 }
