@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <h1>學生租屋權益知識庫</h1>
-            <p>專為大學生設計的租屋防雷指南，用最白話的方式看懂你的權利。</p>
+            <p>專為大學生設計的暗黑系防雷指南，遇到問題直接問右下角的 AI 助手！</p>
         </header>
 
         <main>
@@ -18,15 +18,65 @@
                 <h2>📚 常見租屋知識目錄</h2>
                 <ul class="article-list">
                     <li><a href="pages/deposit-rules.html">押金到底能收多少？退租時怎麼拿回來？</a></li>
-                    <li><a href="#">東西壞了誰負責修？修繕責任歸屬 (建置中)</a></li>
-                    <li><a href="#">想提前解約怎麼辦？違約金怎麼算？ (建置中)</a></li>
+                    <li><a href="#">東西壞了誰負責修？修繕責任歸屬 (敬請期待)</a></li>
                 </ul>
             </div>
         </main>
-
-        <footer>
-            <p>© 2026 學生租屋權益知識庫 | Design with Card UI</p>
-        </footer>
     </div>
+
+    <!-- AI 聊天室元件 -->
+    <div id="chat-widget">
+        <button id="chat-btn" onclick="toggleChat()">💬</button>
+        <div id="chat-box">
+            <div id="chat-header">租屋法律小助手 AI</div>
+            <div id="chat-content">
+                <div class="msg bot-msg">你好！我是租屋小助手，有任何關於「押金」、「修繕」或「解約」的問題都可以問我喔！</div>
+            </div>
+            <div id="chat-input-area">
+                <input type="text" id="chat-input" placeholder="輸入你的問題..." onkeypress="handleEnter(event)">
+                <button id="send-btn" onclick="sendMessage()">傳送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const box = document.getElementById('chat-box');
+            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const content = document.getElementById('chat-content');
+            // 顯示使用者訊息
+            content.innerHTML += `<div class="msg user-msg">${text}</div>`;
+            input.value = '';
+            content.scrollTop = content.scrollHeight;
+            
+            // 延遲模擬 AI 思考時間
+            setTimeout(() => {
+                let reply = "這個問題比較複雜，建議你直接撥打崔媽媽基金會專線尋求專業協助喔！";
+                
+                // 關鍵字判斷邏輯
+                if (text.includes("押金")) {
+                    reply = "依據法規，押金最高只能收「兩個月」的租金喔！退租時房間清空並結清水電，房東就必須全額退還。";
+                } else if (text.includes("修繕") || text.includes("壞掉") || text.includes("壞了")) {
+                    reply = "如果是自然損壞（例如冷氣突然不冷、熱水器壞掉），原則上都是「房東」要負責出錢修繕喔！記得先拍照存證再通知房東。";
+                } else if (text.includes("解約") || text.includes("退租") || text.includes("違約")) {
+                    reply = "如果合約上有勾選「得任意終止租約」，只要提早一個月通知房東，最多只會被扣「一個月」的違約金。";
+                }
+                
+                content.innerHTML += `<div class="msg bot-msg">${reply}</div>`;
+                content.scrollTop = content.scrollHeight;
+            }, 600);
+        }
+    </script>
 </body>
 </html>
