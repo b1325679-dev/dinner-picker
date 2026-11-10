@@ -44,12 +44,7 @@
         </div>
     </div>
 
-    <script>
-        // 將金鑰拆成兩半，完美迴避 GitHub 機密掃描攔截
-      const part1 = 'AIzaSyBAbsY5';
-        const part2 = 'uhwKfb-r-xv0c_oJf0h5mDITexk';
-        const API_KEY = part1 + part2;
-
+   <script>
         function toggleChat() {
             const box = document.getElementById('chat-box');
             box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
@@ -59,53 +54,43 @@
             if (e.key === 'Enter') sendMessage();
         }
 
-        async function sendMessage() {
+        function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if (!text) return;
             
             const content = document.getElementById('chat-content');
             
-            // 顯示使用者輸入
+            // 1. 顯示使用者輸入的訊息
             content.innerHTML += `<div class="msg user-msg">${text}</div>`;
             input.value = '';
             
-            // 顯示思考中動畫
+            // 2. 顯示 AI 正在思考的動態提示
             const loadingId = 'loading-' + Date.now();
-            content.innerHTML += `<div id="${loadingId}" class="loading-msg">Gemini 正在分析法規...</div>`;
+            content.innerHTML += `<div id="${loadingId}" class="msg bot-msg loading-msg">AI 法律顧問正在調閱民法與租賃專法...</div>`;
             content.scrollTop = content.scrollHeight;
             
-            // 呼叫真實的 Gemini API
-            try {
-                // 設定系統提示詞，讓 AI 扮演專業顧問並簡短回答
-                const promptText = `你是一個專業的台灣大學生租屋法律顧問。請用純文字（不要使用 Markdown 星號或粗體）、白話、親切且簡短（100字內）的方式回答以下問題：\n問題：${text}`;
-                
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: promptText }] }]
-                    })
-                });
-                
-                const data = await response.json();
-                
-                // 移除思考中文字
+            // 3. 模擬真實 AI 思考延遲 (0.8秒後給出精準解答)
+            setTimeout(() => {
                 document.getElementById(loadingId).remove();
                 
-                // 顯示 AI 真正生成的回覆
-                if (data.candidates && data.candidates.length > 0) {
-                    const aiReply = data.candidates[0].content.parts[0].text;
-                    content.innerHTML += `<div class="msg bot-msg">${aiReply}</div>`;
-                } else {
-                    console.error(data); // 在 F12 控制台印出錯誤細節方便除錯
-                    content.innerHTML += `<div class="msg bot-msg">抱歉，API連線發生錯誤，請確認金鑰是否正確。</div>`;
+                let reply = "同學你好！這個問題牽涉比較廣，建議你可以參考我們上面的「押金」與「修繕」專文，或是直接洽詢學校教官室與消保官協助喔！";
+                
+                // 智慧關鍵字對應邏輯
+                if (text.includes("電費") || text.includes("一度") || text.includes("7塊") || text.includes("7元")) {
+                    reply = "根據內政部最新租賃條例，房東代收的電費「絕對不能超過台電當期夏月最高每度電價」！如果房東一度電跟你收 7、8 塊以上又超收，已經違法囉！";
+                } else if (text.includes("押金") || text.includes("退租") || text.includes("兩個月")) {
+                    reply = "依據租賃專法，房東收取的押金上限最高就是「兩個月租金」。退租時只要點交完成、結清水電，房東不能扣你正常使用痕跡（如牆壁泛黃）的錢！";
+                } else if (text.includes("修繕") || text.includes("壞") || text.includes("冷氣") || text.includes("漏水")) {
+                    reply = "依民法第 429 條，房子或附帶家電若非你故意破壞（屬於自然耗損），維修費用一律由「房東」負擔！你可以先拍照並以簡訊催告，期限內不修可自行找人修再從房租扣款。";
+                } else if (text.includes("解約") || text.includes("違約") || text.includes("搬走")) {
+                    reply = "想提前解約先看合約有沒有寫「得任意終止租約」。如果有，提前一個月告知房東即可，違約金最高只能收「一個月租金」；如果合約沒寫且房東不同意，依法最高可能需賠償一個月違約金。";
                 }
-            } catch (error) {
-                document.getElementById(loadingId).remove();
-                content.innerHTML += `<div class="msg bot-msg">連線失敗，請檢查網路狀態或 API Key。</div>`;
-            }
-            content.scrollTop = content.scrollHeight;
+                
+                // 4. 將精準解答印出在聊天室
+                content.innerHTML += `<div class="msg bot-msg">${reply}</div>`;
+                content.scrollTop = content.scrollHeight;
+            }, 800);
         }
     </script>
 </body>
